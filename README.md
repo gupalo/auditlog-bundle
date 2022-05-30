@@ -35,3 +35,38 @@ php bin/console doctrine:migrations:migrate
 php bin/console assets:install
 ```
 
+Usage
+
+Audit entity must implements 
+```php
+Gupalo\AuditLogBundle\Entity\AwareAuditLogInterface
+```
+
+For log audit
+
+List:
+```php
+$this->dispatcher->dispatch(new ListEvent(new AwareAuditLogInterface()));
+```
+View 
+```php
+$this->dispatcher->dispatch(new ViewEvent($entity));
+```
+Create
+```php
+$this->dispatcher->dispatch(new CreateEvent($entity));
+```
+Restore
+```php
+$this->dispatcher->dispatch(new RestoreEvent($entity));
+```
+Archive
+```php
+$this->dispatcher->dispatch(new ArchiveEvent($entity));
+```
+Export
+```php
+$this->dispatcher->dispatch(new ExportEvent($entity));
+```
+
+
