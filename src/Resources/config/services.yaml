@@ -11,7 +11,23 @@ services:
     Gupalo\AuditLogBundle\Repository\AuditLogRepository:
         autowire: true
 
-    Gupalo\AuditLogBundle\EventSubscriber\AuditLogEventSubscriber:
-        tags:
-            - name: 'doctrine.event_subscriber'
+    Gupalo\AuditLogBundle\EventSubscriber\ArchiveEventSubscriber:
+        autowire: true
 
+    Gupalo\AuditLogBundle\EventSubscriber\CreateEventSubscriber:
+        autowire: true
+
+    Gupalo\AuditLogBundle\EventSubscriber\ExportEventSubscriber:
+        autowire: true
+
+    Gupalo\AuditLogBundle\EventSubscriber\ListEventSubscriber:
+        autowire: true
+
+    Gupalo\AuditLogBundle\EventSubscriber\LoginSuccessEventSubscriber:
+        autowire: true
+
+    Gupalo\AuditLogBundle\EventSubscriber\RestoreEventSubscriber:
+        autowire: true
+
+    Gupalo\AuditLogBundle\EventSubscriber\ViewEventSubscriber:
+        autowire: true

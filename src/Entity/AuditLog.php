@@ -22,11 +22,11 @@ class AuditLog
     #[ORM\Column(type: 'string', length: 255)]
     private string $action;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private string $entity;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $entity = null;
 
-    #[ORM\Column(type: 'integer')]
-    private int $entityId;
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $entityId = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $ip = null;
@@ -45,24 +45,24 @@ class AuditLog
         return $this->id;
     }
 
-    public function getEntity(): string
+    public function getEntity(): ?string
     {
         return $this->entity;
     }
 
-    public function setEntity(string $entity): self
+    public function setEntity(?string $entity): self
     {
         $this->entity = $entity;
 
         return $this;
     }
 
-    public function getEntityId(): int
+    public function getEntityId(): ?int
     {
         return $this->entityId;
     }
 
-    public function setEntityId(int $entityId): self
+    public function setEntityId(?int $entityId): self
     {
         $this->entityId = $entityId;
 

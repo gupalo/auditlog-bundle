@@ -8,6 +8,11 @@
     <thead class="thead-light">
     <tr>
         <th scope="col">Id</th>
+        <th scope="col">Action</th>
+        <th scope="col">Entity</th>
+        <th scope="col">Entity Id</th>
+        <th scope="col">Ip</th>
+        <th scope="col">Country code</th>
         <th scope="col">User</th>
         <th scope="col">Created At</th>
     </tr>
@@ -16,6 +21,11 @@
     {% for item in items %}
         <tr>
             <td class="text-nowrap">{{ item.id }}</td>
+            <td class="text-nowrap">{{ item.action }}</td>
+            <td class="text-nowrap">{{ item.entity }}</td>
+            <td class="text-nowrap">{{ item.entityId }}</td>
+            <td class="text-nowrap">{{ item.ip }}</td>
+            <td class="text-nowrap">{{ item.country }}</td>
             <td class="text-nowrap">{{ item.user ? item.user.username : '' }}</td>
             <td class="text-nowrap">{{ item.createdAt ? item.createdAt|date('Y-m-d H:i') : '-' }}</td>
         </tr>
