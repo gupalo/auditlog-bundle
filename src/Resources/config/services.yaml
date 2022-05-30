@@ -1,0 +1,17 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    Gupalo\AuditLogBundle\Controller\:
+        resource: '../../Controller/'
+        tags: [ 'controller.service_arguments' ]
+
+    Gupalo\AuditLogBundle\Repository\AuditLogRepository:
+        autowire: true
+
+    Gupalo\AuditLogBundle\EventSubscriber\AuditLogEventSubscriber:
+        tags:
+            - name: 'doctrine.event_subscriber'
+
