@@ -42,11 +42,11 @@ Audit entity must implements
 Gupalo\AuditLogBundle\Entity\AwareAuditLogInterface
 ```
 
-For log audit
+For log audit add dispatch
 
 List:
 ```php
-$this->dispatcher->dispatch(new ListEvent(new AwareAuditLogInterface()));
+$this->dispatcher->dispatch(new ListEvent(new AwareAuditLogInterfaceEntity()));
 ```
 View 
 ```php
@@ -69,4 +69,4 @@ Export
 $this->dispatcher->dispatch(new ExportEvent($entity));
 ```
 
-
+base route - /audit-log
