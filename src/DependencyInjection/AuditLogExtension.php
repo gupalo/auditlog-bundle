@@ -23,7 +23,7 @@ class AuditLogExtension extends Extension
         $env = $container->getParameter('kernel.environment');
 
         if ($env === 'test') {
-            $loader->load('services_test.yaml');
+            //$loader->load('services_test.yaml');
         }
     }
 }
