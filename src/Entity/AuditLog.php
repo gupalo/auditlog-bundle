@@ -7,7 +7,6 @@ use DateTime;
 use DateTimeInterface;
 use Gupalo\AuditLogBundle\Repository\AuditLogRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Gupalo\GoogleAuthBundle\Entity\User;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: AuditLogRepository::class)]
@@ -34,8 +33,8 @@ class AuditLog
     #[ORM\Column(type: 'text', length: 255, nullable: true)]
     private ?string $country = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    private ?UserInterface $user = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $user = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private DateTimeInterface $createdAt;
@@ -69,12 +68,12 @@ class AuditLog
         return $this;
     }
 
-    public function getUser(): ?UserInterface
+    public function getUser(): ?string
     {
         return $this->user;
     }
 
-    public function setUser(?UserInterface $user): self
+    public function setUser(?string $user): self
     {
         $this->user = $user;
 
