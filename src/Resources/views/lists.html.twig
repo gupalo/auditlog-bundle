@@ -26,7 +26,7 @@
             <td class="text-nowrap">{{ item.entityId }}</td>
             <td class="text-nowrap">{{ item.ip }}</td>
             <td class="text-nowrap">{{ item.country }}</td>
-            <td class="text-nowrap">{{ item.user }}</td>
+            <td class="text-nowrap">{{ item.user ? item.user : '' }}</td>
             <td class="text-nowrap">{{ item.createdAt ? item.createdAt|date('Y-m-d H:i') : '-' }}</td>
         </tr>
     {% endfor %}

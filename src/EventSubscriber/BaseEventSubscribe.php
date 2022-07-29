@@ -5,7 +5,6 @@ namespace Gupalo\AuditLogBundle\EventSubscriber;
 use Gupalo\AuditLogBundle\Entity\AuditLog;
 use Gupalo\AuditLogBundle\Entity\AwareAuditLogInterface;
 use Gupalo\AuditLogBundle\Repository\AuditLogRepository;
-use Gupalo\GoogleAuthBundle\Entity\User;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -34,7 +33,7 @@ abstract class BaseEventSubscribe
             $audit->setUser($user->getUserIdentifier());
         }
         $audit->setIp($this->requestStack->getCurrentRequest()->getClientIp());
-
+        
         $this->auditLogRepository->add($audit, true);
     }
 }

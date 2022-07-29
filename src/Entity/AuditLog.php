@@ -7,7 +7,6 @@ use DateTime;
 use DateTimeInterface;
 use Gupalo\AuditLogBundle\Repository\AuditLogRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: AuditLogRepository::class)]
 #[ORM\HasLifecycleCallbacks]
