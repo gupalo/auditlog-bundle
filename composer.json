@@ -15,7 +15,6 @@
         "ext-json": "*",
         "doctrine/doctrine-bundle": "^2.5",
         "doctrine/orm": "^2.11|^3.0",
-        "gupalo/google-auth-bundle": "^1.6",
         "symfony/form": "^6.0",
         "symfony/security-core": "^6.0",
         "symfony/translation": "^6.0",
