@@ -1,6 +1,6 @@
 <?php
 
-namespace App\EventSubscriber;
+namespace Gupalo\AuditLogBundle\EventSubscriber;
 
 use Gupalo\AuditLogBundle\Entity\AuditLog;
 use Gupalo\AuditLogBundle\Entity\AwareAuditLogInterface;
