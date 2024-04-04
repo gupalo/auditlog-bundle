@@ -2,9 +2,12 @@
 
 namespace Gupalo\AuditLogBundle\Repository;
 
+use App\Enum\AuditLogAction;
 use Gupalo\AuditLogBundle\Entity\AuditLog;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Gupalo\DateUtils\DateUtils;
+use Peekabooauth\PeekabooBundle\DTO\UserDTO;
 
 /**
  * @extends ServiceEntityRepository<AuditLog>
@@ -20,7 +23,7 @@ class AuditLogRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, AuditLog::class);
     }
-    
+
     public function add(AuditLog $entity, bool $flush = false): void
     {
         $this->_em->persist($entity);
@@ -28,7 +31,7 @@ class AuditLogRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
-    
+
     public function remove(AuditLog $entity, bool $flush = false): void
     {
         $this->_em->remove($entity);

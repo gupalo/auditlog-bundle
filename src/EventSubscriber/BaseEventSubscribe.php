@@ -4,6 +4,7 @@ namespace Gupalo\AuditLogBundle\EventSubscriber;
 
 use Gupalo\AuditLogBundle\Entity\AuditLog;
 use Gupalo\AuditLogBundle\Entity\AwareAuditLogInterface;
+use Gupalo\AuditLogBundle\Enum\AuditLogAction;
 use Gupalo\AuditLogBundle\Repository\AuditLogRepository;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
@@ -11,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 abstract class BaseEventSubscribe
 {
-    protected string $action = '';
+    protected ?AuditLogAction $action = null;
 
     public function __construct(
         protected AuditLogRepository $auditLogRepository,
@@ -27,13 +28,13 @@ abstract class BaseEventSubscribe
             $audit->setEntity($entity::class);
             $audit->setEntityId($entity->getId());
         }
-        $audit->setAction($this->action);
+        $audit->setAction($this->action?->value ?? '');
         $user = $user ?? $this->security->getUser();
         if ($user instanceof UserInterface) {
             $audit->setUser($user->getUserIdentifier());
         }
         $audit->setIp($this->requestStack->getCurrentRequest()->getClientIp());
-        
+
         $this->auditLogRepository->add($audit, true);
     }
 }
