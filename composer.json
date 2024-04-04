@@ -11,7 +11,7 @@
         }
     },
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.2",
         "ext-json": "*",
         "doctrine/doctrine-bundle": "^2.5",
         "doctrine/orm": "^2.11|^3.0",
@@ -24,14 +24,15 @@
         "symfony/orm-pack": "^2.2",
         "symfony/asset": "^6.0",
         "symfony/validator": "^6.0",
-        "sensio/framework-extra-bundle": "^6.2"
+        "sensio/framework-extra-bundle": "^6.2",
+        "gupalo/dateutils": "^1.13"
     },
     "config": {
         "preferred-install": {
             "*": "dist"
         },
         "platform": {
-            "php": "8.1"
+            "php": "8.2"
         },
         "sort-packages": true
     }

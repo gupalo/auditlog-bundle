@@ -2,12 +2,13 @@
 
 namespace Gupalo\AuditLogBundle\EventSubscriber;
 
+use Gupalo\AuditLogBundle\Enum\AuditLogAction;
 use Gupalo\AuditLogBundle\Event\ArchiveEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ArchiveEventSubscriber extends BaseEventSubscribe implements EventSubscriberInterface
 {
-    protected string $action = 'archive';
+    protected ?AuditLogAction $action = AuditLogAction::Archive;
 
     public static function getSubscribedEvents(): array
     {

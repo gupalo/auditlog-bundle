@@ -38,6 +38,15 @@ class AuditLog
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private DateTimeInterface $createdAt;
 
+    #[ORM\Column(type: 'string', length: 64, nullable: true)]
+    private ?string $field;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $beforeValue;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $afterValue;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -131,6 +140,42 @@ class AuditLog
     public function setCountry(?string $country): self
     {
         $this->country = $country;
+
+        return $this;
+    }
+
+    public function getField(): ?string
+    {
+        return $this->field;
+    }
+
+    public function setField(?string $field): self
+    {
+        $this->field = $field;
+
+        return $this;
+    }
+
+    public function getBeforeValue(): ?string
+    {
+        return $this->beforeValue;
+    }
+
+    public function setBeforeValue(?string $beforeValue): self
+    {
+        $this->beforeValue = $beforeValue;
+
+        return $this;
+    }
+
+    public function getAfterValue(): ?string
+    {
+        return $this->afterValue;
+    }
+
+    public function setAfterValue(?string $afterValue): self
+    {
+        $this->afterValue = $afterValue;
 
         return $this;
     }
