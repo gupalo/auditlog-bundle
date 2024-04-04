@@ -82,8 +82,8 @@ class AuditLogEventSubscriber implements EventSubscriber
     ): void {
         $audit = (new AuditLog())
             ->setCreatedAt(DateUtils::now())
-            ->setAction($action)
-            ->setEntityClass(get_class($entity))
+            ->setAction($action->value)
+            ->setEntity(get_class($entity))
             ->setEntityId($entity->getId())
             ->setField($field)
             ->setBeforeValue($before)
