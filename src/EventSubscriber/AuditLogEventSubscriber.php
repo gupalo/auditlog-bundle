@@ -74,7 +74,7 @@ class AuditLogEventSubscriber implements EventSubscriber
 
     private function addAuditItem(
         EntityManagerInterface $em,
-        AuditableInterface $entity,
+        AwareAuditLogInterface $entity,
         AuditLogAction $action,
         ?string $field = null,
         ?string $before = null,
@@ -91,7 +91,7 @@ class AuditLogEventSubscriber implements EventSubscriber
         $em->persist($audit);
     }
 
-    private function addAuditItemsForChangeSet(EntityManagerInterface $em, AuditableInterface $entity, array $changes)
+    private function addAuditItemsForChangeSet(EntityManagerInterface $em, AwareAuditLogInterface $entity, array $changes)
     {
         foreach ($changes as $field => $change) {
             $this->addAuditItem(
