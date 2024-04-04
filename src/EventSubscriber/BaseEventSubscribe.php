@@ -12,6 +12,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 abstract class BaseEventSubscribe
 {
+    const IGNORE_USERS = [
+        'prometheus'
+    ];
+
     protected ?AuditLogAction $action = null;
 
     public function __construct(
@@ -24,15 +28,21 @@ abstract class BaseEventSubscribe
     protected function saveLog(?AwareAuditLogInterface $entity = null, ?UserInterface $user = null): void
     {
         $audit = new AuditLog();
+
+        $user = $user ?? $this->security->getUser();
+        if ($user instanceof UserInterface) {
+            $audit->setUser($user->getUserIdentifier());
+        }
+
+        if (in_array($audit->getUser(), self::IGNORE_USERS, true)) {
+            return;
+        }
+
         if ($entity) {
             $audit->setEntity($entity::class);
             $audit->setEntityId($entity->getId());
         }
         $audit->setAction($this->action?->value ?? '');
-        $user = $user ?? $this->security->getUser();
-        if ($user instanceof UserInterface) {
-            $audit->setUser($user->getUserIdentifier());
-        }
         $audit->setIp($this->requestStack->getCurrentRequest()->getClientIp());
 
         $this->auditLogRepository->add($audit, true);
