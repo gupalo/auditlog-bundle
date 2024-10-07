@@ -2,6 +2,7 @@
 
 namespace Gupalo\AuditLogBundle\EventSubscriber;
 
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Gupalo\AuditLogBundle\Entity\AuditLog;
 use Gupalo\AuditLogBundle\Entity\AwareAuditLogInterface;
 use Gupalo\AuditLogBundle\Enum\AuditLogAction;
@@ -9,17 +10,15 @@ use DateTimeInterface;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Events;
-use Doctrine\ORM\ORMException;
-use Doctrine\ORM\OptimisticLockException;
 use Gupalo\DateUtils\DateUtils;
 use JsonException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-class AuditLogEventSubscriber implements EventSubscriber
+readonly class AuditLogEventSubscriber implements EventSubscriber
 {
     public function __construct(
-        private readonly EntityManagerInterface $em,
-        private TokenStorageInterface $tokenStorage
+        private EntityManagerInterface $em,
+        private TokenStorageInterface $tokenStorage,
     ) {
     }
     public function getSubscribedEvents(): array
@@ -30,12 +29,7 @@ class AuditLogEventSubscriber implements EventSubscriber
         ];
     }
 
-    /**
-     * @param \Doctrine\Persistence\Event\LifecycleEventArgs $args
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function postPersist(\Doctrine\Persistence\Event\LifecycleEventArgs $args): void
+    public function postPersist(LifecycleEventArgs $args): void
     {
         $entity = $args->getObject();
         if ($entity instanceof AwareAuditLogInterface) {
@@ -48,13 +42,7 @@ class AuditLogEventSubscriber implements EventSubscriber
         }
     }
 
-    /**
-     * @param \Doctrine\Persistence\Event\LifecycleEventArgs $args
-     * @throws JsonException
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function postUpdate(\Doctrine\Persistence\Event\LifecycleEventArgs $args): void
+    public function postUpdate(LifecycleEventArgs $args): void
     {
         $entity = $args->getObject();
         if ($entity instanceof AwareAuditLogInterface) {
@@ -88,23 +76,23 @@ class AuditLogEventSubscriber implements EventSubscriber
             ->setUser($this->tokenStorage->getToken()?->getUserIdentifier())
             ->setAction($action->value)
             ->setEntity(get_class($entity))
-            ->setEntityId($entity->getId())
+            ->setEntityId(method_exists($entity, 'getId') ? $entity->getId() : null)
             ->setField($field)
             ->setBeforeValue($before)
             ->setAfterValue($after);
         $em->persist($audit);
     }
 
-    private function addAuditItemsForChangeSet(EntityManagerInterface $em, AwareAuditLogInterface $entity, array $changes)
+    private function addAuditItemsForChangeSet(EntityManagerInterface $em, AwareAuditLogInterface $entity, array $changes): void
     {
         foreach ($changes as $field => $change) {
             $this->addAuditItem(
-                $em,
-                $entity,
-                AuditLogAction::Edit,
-                $field,
-                $this->resolveFieldValue($change[0]),
-                $this->resolveFieldValue($change[1]),
+                em: $em,
+                entity: $entity,
+                action: AuditLogAction::Edit,
+                field: $field,
+                before: $this->resolveFieldValue($change[0]),
+                after: $this->resolveFieldValue($change[1]),
             );
         }
     }

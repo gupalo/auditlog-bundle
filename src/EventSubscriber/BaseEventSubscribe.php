@@ -7,20 +7,20 @@ use Gupalo\AuditLogBundle\Entity\AwareAuditLogInterface;
 use Gupalo\AuditLogBundle\Enum\AuditLogAction;
 use Gupalo\AuditLogBundle\Repository\AuditLogRepository;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 abstract class BaseEventSubscribe
 {
     private const IGNORE_USERS = [
-        'prometheus'
+        'prometheus',
     ];
 
     protected ?AuditLogAction $action = null;
 
     public function __construct(
         protected AuditLogRepository $auditLogRepository,
-        protected Security $security,
+        protected TokenStorageInterface $tokenStorage,
         protected RequestStack $requestStack
     ) {
     }
@@ -29,7 +29,7 @@ abstract class BaseEventSubscribe
     {
         $audit = new AuditLog();
 
-        $user = $user ?? $this->security->getUser();
+        $user ??= $this->tokenStorage->getToken()?->getUser();
         if ($user instanceof UserInterface) {
             $audit->setUser($user->getUserIdentifier());
         }
@@ -40,10 +40,10 @@ abstract class BaseEventSubscribe
 
         if ($entity) {
             $audit->setEntity($entity::class);
-            $audit->setEntityId($entity->getId());
+            $audit->setEntityId(method_exists($entity, 'getId') ? $entity->getId() : null);
         }
         $audit->setAction($this->action?->value ?? '');
-        $audit->setIp($this->requestStack->getCurrentRequest()?->getClientIp() ?? '127.0.0.1');
+        $audit->setIp($this->requestStack->getCurrentRequest()?->getClientIp());
 
         $this->auditLogRepository->add($audit, true);
     }

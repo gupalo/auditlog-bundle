@@ -3,11 +3,18 @@
 namespace Gupalo\AuditLogBundle\DependencyInjection;
 
 use Exception;
-use Gupalo\AuditLogBundle\DependencyInjection\Configuration;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Gupalo\AuditLogBundle\EventSubscriber\ArchiveEventSubscriber;
+use Gupalo\AuditLogBundle\EventSubscriber\AuditLogEventSubscriber;
+use Gupalo\AuditLogBundle\EventSubscriber\CreateEventSubscriber;
+use Gupalo\AuditLogBundle\EventSubscriber\ExportEventSubscriber;
+use Gupalo\AuditLogBundle\EventSubscriber\ListEventSubscriber;
+use Gupalo\AuditLogBundle\EventSubscriber\LoginSuccessEventSubscriber;
+use Gupalo\AuditLogBundle\EventSubscriber\RestoreEventSubscriber;
+use Gupalo\AuditLogBundle\EventSubscriber\ViewEventSubscriber;
 
 class AuditLogExtension extends Extension
 {
@@ -24,43 +31,41 @@ class AuditLogExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
 
         $loader->load('services.yaml');
-        
+
         if ($config['events']['archive']) {
-            $this->registerAutowire($container, 'Gupalo\\AuditLogBundle\\EventSubscriber\\ArchiveEventSubscriber');
+            $this->registerAutowire($container, ArchiveEventSubscriber::class);
         }
 
         if ($config['events']['universal']) {
-            $this->registerAutowire($container, 'Gupalo\\AuditLogBundle\\EventSubscriber\\AuditLogEventSubscriber', 'doctrine.event_subscriber');
+            $this->registerAutowire($container, AuditLogEventSubscriber::class, 'doctrine.event_subscriber');
         }
 
         if ($config['events']['create']) {
-            $this->registerAutowire($container, 'Gupalo\\AuditLogBundle\\EventSubscriber\\CreateEventSubscriber');
+            $this->registerAutowire($container, CreateEventSubscriber::class);
         }
 
         if ($config['events']['export']) {
-            $this->registerAutowire($container, 'Gupalo\\AuditLogBundle\\EventSubscriber\\ExportEventSubscriber');
+            $this->registerAutowire($container, ExportEventSubscriber::class);
         }
 
         if ($config['events']['list']) {
-            $this->registerAutowire($container, 'Gupalo\\AuditLogBundle\\EventSubscriber\\ListEventSubscriber');
+            $this->registerAutowire($container, ListEventSubscriber::class);
         }
 
         if ($config['events']['login']) {
-            $this->registerAutowire($container, 'Gupalo\\AuditLogBundle\\EventSubscriber\\LoginSuccessEventSubscriber');
+            $this->registerAutowire($container, LoginSuccessEventSubscriber::class);
         }
 
-        if ($config['events']['restor']) {
-            $this->registerAutowire($container, 'Gupalo\\AuditLogBundle\\EventSubscriber\\RestoreEventSubscriber');
+        if ($config['events']['restore']) {
+            $this->registerAutowire($container, RestoreEventSubscriber::class);
         }
 
         if ($config['events']['view']) {
-            $this->registerAutowire($container, 'Gupalo\\AuditLogBundle\\EventSubscriber\\ViewEventSubscriber');
+            $this->registerAutowire($container, ViewEventSubscriber::class);
         }
-
-        $env = $container->getParameter('kernel.environment');
     }
 
-    private function registerAutowire(ContainerBuilder $container, $service, $tag = '')
+    private function registerAutowire(ContainerBuilder $container, $service, $tag = ''): void
     {
         if ($tag !== '') {
             $container->register($service)
@@ -78,7 +83,6 @@ class AuditLogExtension extends Extension
 
     public function getConfiguration(array $config, ContainerBuilder $container)
     {
-        return new Configuration($container->getParameter('kernel.debug'));
+        return new Configuration();
     }
-
 }
