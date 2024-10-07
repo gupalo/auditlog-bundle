@@ -24,7 +24,6 @@
         "symfony/orm-pack": "^2.2",
         "symfony/asset": "^6.0|^7.0",
         "symfony/validator": "^6.0|^7.0",
-        "sensio/framework-extra-bundle": "^6.2|^7.0",
         "gupalo/dateutils": "^1.13"
     }
     ,
