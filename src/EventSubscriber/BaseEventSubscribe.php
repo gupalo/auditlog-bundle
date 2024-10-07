@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 abstract class BaseEventSubscribe
 {
-    const IGNORE_USERS = [
+    private const IGNORE_USERS = [
         'prometheus'
     ];
 
@@ -43,7 +43,7 @@ abstract class BaseEventSubscribe
             $audit->setEntityId($entity->getId());
         }
         $audit->setAction($this->action?->value ?? '');
-        $audit->setIp($this->requestStack->getCurrentRequest()->getClientIp());
+        $audit->setIp($this->requestStack->getCurrentRequest()?->getClientIp() ?? '127.0.0.1');
 
         $this->auditLogRepository->add($audit, true);
     }
