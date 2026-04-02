@@ -10,7 +10,7 @@ readonly class ViewEvent
     {
     }
 
-    public function getEntity()
+    public function getEntity(): AwareAuditLogInterface
     {
         return $this->entity;
     }

@@ -42,7 +42,7 @@ abstract class BaseEventSubscribe
             $audit->setEntity($entity::class);
             $audit->setEntityId(method_exists($entity, 'getId') ? $entity->getId() : null);
         }
-        $audit->setAction($this->action?->value ?? '');
+        $audit->setAction($this->action->value ?? '');
         $audit->setIp($this->requestStack->getCurrentRequest()?->getClientIp());
 
         $this->auditLogRepository->add($audit, true);

@@ -10,7 +10,7 @@ readonly class RestoreEvent
     {
     }
 
-    public function getEntity()
+    public function getEntity(): AwareAuditLogInterface
     {
         return $this->entity;
     }

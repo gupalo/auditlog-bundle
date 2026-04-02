@@ -3,6 +3,7 @@
 namespace Gupalo\AuditLogBundle\DependencyInjection;
 
 use Exception;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -19,8 +20,7 @@ use Gupalo\AuditLogBundle\EventSubscriber\ViewEventSubscriber;
 class AuditLogExtension extends Extension
 {
     /**
-     * @param array $configs
-     * @param ContainerBuilder $container
+     * @param array<mixed> $configs
      * @throws Exception
      */
     public function load(array $configs, ContainerBuilder $container): void
@@ -32,56 +32,51 @@ class AuditLogExtension extends Extension
 
         $loader->load('services.yaml');
 
-        if ($config['events']['archive']) {
+        $events = $config['events'] ?? [];
+
+        if ($events['archive'] ?? false) {
             $this->registerAutowire($container, ArchiveEventSubscriber::class);
         }
 
-        if ($config['events']['universal']) {
-            $this->registerAutowire($container, AuditLogEventSubscriber::class, 'doctrine.event_subscriber');
+        if ($events['universal'] ?? false) {
+            $this->registerAutowire($container, AuditLogEventSubscriber::class);
         }
 
-        if ($config['events']['create']) {
+        if ($events['create'] ?? false) {
             $this->registerAutowire($container, CreateEventSubscriber::class);
         }
 
-        if ($config['events']['export']) {
+        if ($events['export'] ?? false) {
             $this->registerAutowire($container, ExportEventSubscriber::class);
         }
 
-        if ($config['events']['list']) {
+        if ($events['list'] ?? false) {
             $this->registerAutowire($container, ListEventSubscriber::class);
         }
 
-        if ($config['events']['login']) {
+        if ($events['login'] ?? false) {
             $this->registerAutowire($container, LoginSuccessEventSubscriber::class);
         }
 
-        if ($config['events']['restore']) {
+        if ($events['restore'] ?? false) {
             $this->registerAutowire($container, RestoreEventSubscriber::class);
         }
 
-        if ($config['events']['view']) {
+        if ($events['view'] ?? false) {
             $this->registerAutowire($container, ViewEventSubscriber::class);
         }
     }
 
-    private function registerAutowire(ContainerBuilder $container, $service, $tag = ''): void
+    private function registerAutowire(ContainerBuilder $container, string $service): void
     {
-        if ($tag !== '') {
-            $container->register($service)
-                ->setAutowired(true)
-                ->setAutoconfigured(true)
-                ->setPublic(true)
-                ->addTag($tag);
-        } else {
-            $container->register($service)
-                ->setAutowired(true)
-                ->setAutoconfigured(true)
-                ->setPublic(true);
-        }
+        $container->register($service)
+            ->setAutowired(true)
+            ->setAutoconfigured(true)
+            ->setPublic(true);
     }
 
-    public function getConfiguration(array $config, ContainerBuilder $container)
+    /** @param array<mixed> $config */
+    public function getConfiguration(array $config, ContainerBuilder $container): ConfigurationInterface
     {
         return new Configuration();
     }

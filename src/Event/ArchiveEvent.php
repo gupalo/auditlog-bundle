@@ -12,7 +12,7 @@ readonly class ArchiveEvent
     {
     }
 
-    public function getEntity()
+    public function getEntity(): AwareAuditLogInterface
     {
         return $this->entity;
     }

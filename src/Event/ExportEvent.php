@@ -10,7 +10,7 @@ readonly class ExportEvent
     {
     }
 
-    public function getEntity()
+    public function getEntity(): AwareAuditLogInterface
     {
         return $this->entity;
     }

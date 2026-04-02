@@ -2,33 +2,29 @@
 
 namespace Gupalo\AuditLogBundle\EventSubscriber;
 
+use DateTimeInterface;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Gupalo\AuditLogBundle\Entity\AuditLog;
 use Gupalo\AuditLogBundle\Entity\AwareAuditLogInterface;
 use Gupalo\AuditLogBundle\Enum\AuditLogAction;
-use DateTimeInterface;
-use Doctrine\Common\EventSubscriber;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Events;
 use Gupalo\DateUtils\DateUtils;
 use JsonException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-readonly class AuditLogEventSubscriber implements EventSubscriber
+#[AsDoctrineListener(event: Events::postPersist)]
+#[AsDoctrineListener(event: Events::postUpdate)]
+readonly class AuditLogEventSubscriber
 {
     public function __construct(
         private EntityManagerInterface $em,
         private TokenStorageInterface $tokenStorage,
     ) {
     }
-    public function getSubscribedEvents(): array
-    {
-        return [
-            Events::postPersist,
-            Events::postUpdate,
-        ];
-    }
 
+    /** @param LifecycleEventArgs<EntityManagerInterface> $args */
     public function postPersist(LifecycleEventArgs $args): void
     {
         $entity = $args->getObject();
@@ -42,6 +38,7 @@ readonly class AuditLogEventSubscriber implements EventSubscriber
         }
     }
 
+    /** @param LifecycleEventArgs<EntityManagerInterface> $args */
     public function postUpdate(LifecycleEventArgs $args): void
     {
         $entity = $args->getObject();
@@ -75,7 +72,7 @@ readonly class AuditLogEventSubscriber implements EventSubscriber
             ->setCreatedAt(DateUtils::now())
             ->setUser($this->tokenStorage->getToken()?->getUserIdentifier())
             ->setAction($action->value)
-            ->setEntity(get_class($entity))
+            ->setEntity($entity::class)
             ->setEntityId(method_exists($entity, 'getId') ? $entity->getId() : null)
             ->setField($field)
             ->setBeforeValue($before)
@@ -83,6 +80,7 @@ readonly class AuditLogEventSubscriber implements EventSubscriber
         $em->persist($audit);
     }
 
+    /** @param array<string, array{0: mixed, 1: mixed}|mixed> $changes */
     private function addAuditItemsForChangeSet(EntityManagerInterface $em, AwareAuditLogInterface $entity, array $changes): void
     {
         foreach ($changes as $field => $change) {
@@ -90,7 +88,7 @@ readonly class AuditLogEventSubscriber implements EventSubscriber
                 em: $em,
                 entity: $entity,
                 action: AuditLogAction::Edit,
-                field: $field,
+                field: (string) $field,
                 before: $this->resolveFieldValue($change[0]),
                 after: $this->resolveFieldValue($change[1]),
             );
@@ -100,7 +98,7 @@ readonly class AuditLogEventSubscriber implements EventSubscriber
     /**
      * @throws JsonException
      */
-    private function resolveFieldValue($value): string
+    private function resolveFieldValue(mixed $value): string
     {
         if ($value instanceof DateTimeInterface) {
             return $value->format(DateUtils::FORMAT_FULL);

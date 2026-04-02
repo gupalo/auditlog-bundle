@@ -17,13 +17,13 @@ class Configuration implements ConfigurationInterface
             ->arrayNode('events')
                 ->children()
                     ->booleanNode('archive')->defaultFalse()->end()
-                    ?->booleanNode('universal')->defaultFalse()->end()
-                    ?->booleanNode('create')->defaultFalse()->end()
-                    ?->booleanNode('export')->defaultFalse()->end()
-                    ?->booleanNode('list')->defaultFalse()->end()
-                    ?->booleanNode('login')->defaultFalse()->end()
-                    ?->booleanNode('restore')->defaultFalse()->end()
-                    ?->booleanNode('view')->defaultFalse()->end()
+                    ->booleanNode('universal')->defaultFalse()->end()
+                    ->booleanNode('create')->defaultFalse()->end()
+                    ->booleanNode('export')->defaultFalse()->end()
+                    ->booleanNode('list')->defaultFalse()->end()
+                    ->booleanNode('login')->defaultFalse()->end()
+                    ->booleanNode('restore')->defaultFalse()->end()
+                    ->booleanNode('view')->defaultFalse()->end()
         ;
 
         return $treeBuilder;
